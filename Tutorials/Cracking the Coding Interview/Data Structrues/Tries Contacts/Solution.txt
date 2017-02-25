@@ -1,0 +1,94 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+class TrieNode
+{
+    char data;
+    HashMap<Character, TrieNode> children = new HashMap<>();;
+    boolean isCompleteWord;
+    int size=0;
+    public TrieNode() 
+    {
+        
+    }
+    public TrieNode(char d){
+        this.data = d;
+    }
+}
+
+class Trie
+{
+    private TrieNode root;
+ 
+    public Trie() {
+        root = new TrieNode();
+    }
+    public boolean startsWith(String prefix) {
+        if(searchNode(prefix) == null) 
+            return false;
+        else
+            return true;
+    }
+ 
+    public TrieNode searchNode(String str){
+        Map<Character, TrieNode> children = root.children; 
+        TrieNode t = null;
+        for(int i=0; i<str.length(); i++){
+            char c = str.charAt(i);
+            if(children.containsKey(c)){
+                t = children.get(c);
+                children = t.children;
+            }else{
+                return null;
+            }
+        }
+        return t;
+    }
+ 
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        HashMap<Character, TrieNode> children = root.children;
+ 
+        for(int i=0; i<word.length(); i++){
+            char c = word.charAt(i);
+ 
+            TrieNode t;
+            if(children.containsKey(c)){
+                    t = children.get(c);
+            }else{
+                t = new TrieNode(c);
+                children.put(c, t);
+            }
+ 
+            children = t.children;
+               t.size++;
+            //set leaf node
+            if(i==word.length()-1)
+                t.isCompleteWord = true;    
+        }
+    }
+}
+    
+public class Solution {
+    
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        Trie t = new Trie();
+        for(int a0 = 0; a0 < n; a0++){
+            String op = in.next();
+            String contact = in.next();
+            
+            if(op.equals("add"))
+                t.insert(contact);
+            else if(op.equals("find"))
+            {
+                TrieNode tt=t.searchNode(contact);
+                System.out.println((tt!=null)?tt.size:0);
+            }
+        }
+    }
+}
